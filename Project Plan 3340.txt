@@ -1,0 +1,23 @@
+﻿CS 3340.502
+
+
+Group: Anthony Tang and Cole Swingholm
+
+
+Computer Architecture Project: MIPs Dungeon Crawler
+
+
+Objective: ASCII art displayed and pseudo randomly generated level of a dungeon crawler with basic movement rules. User manipulates their ascii character to the designated point, while avoiding hazards.
+
+
+Things to do:
+Take input from the user (up down left right), and update the ASCII art frames to represent actions during each turn frame.
+
+
+Implement hazards that interfere with  the user’s path to the objective, that will act on a random number generated basis.
+
+
+RNG: generate pseudo random numbers through a Linear Congruential Generator algorithm.  Implement in MIPs.
+
+
+Maps: Store array(s) for a 5 by 5 character “map” in memory (number to be decided with format spacing). Generate Map through the random number generator mentioned above. Add specific parameters for gameplay purposes (spawning distance between user and objective, spawning distance between user and hazards)
