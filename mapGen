@@ -3,9 +3,18 @@
 mapArray: 	.byte '_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_' #25 _ 's
 newline:	.asciiz  "\n"
 spacer:		.ascii " | "
+#character:	.ascii "P"
 .text
 main:
 
+mapGen:
+	#pick a number between 0 and 24 to place the player 
+	la	$t0, mapArray
+	li	$v0, 42	#random number
+	li	$a1, 24
+		syscall
+	#the random number should be in $a0
+		
 
 gameloop:
 
@@ -46,6 +55,8 @@ gameloop:
 
 		j 	rowPrintLoop	#else just keep doing row print loop 
 
+
+
 exit:
 	li	$v0, 4
 	la 	$a0, newline	#print linebreak
@@ -53,5 +64,3 @@ exit:
 	
 	li	$v0, 10
 	syscall
-		
-	
