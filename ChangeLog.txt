@@ -1,0 +1,17 @@
+Changed:
+ spawns the G, M, and P in distinct non adjacent tiles
+ allows movement of the P character with w a s d, enter to confirm entry. Pulls first ascii value 
+ 
+to do: 
+dialogue boxes on the win and lose conditions
+algorithm for M movement
+possibly a second M or other obstacle generation? 
+fix the horizontal line change movement?
+	currently 
+	y - - - p 
+	x - - - -
+	- - - - -   
+goes to x instead of y. Its close enough that we can argue that it is intentional though. 
+
+if we dont want to add the functionallity to add obstacles, we could create 
+static walls and add multiple monster AI pacman style? seems easy enough to do? 
