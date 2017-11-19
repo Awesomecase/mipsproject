@@ -54,7 +54,7 @@ mapGen:
 checkOverlap:
 	#runs through all possible overlap configurations 
 	#check to see if the spot is occupied 
-	beq 	$s3, $s4 spotConflict
+	beq 	$s3, $s4, spotConflict
 		#or if the spot if within one above / below spaces 
 		sub	$t0, $s3, $s4
 		abs	$t0, $t0
