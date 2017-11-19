@@ -1,0 +1,101 @@
+
+.data
+mapArray:  	.byte '_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_','_' #25 _ 's
+newline:	.asciiz  "\n"
+		
+spacer: 	.ascii " | "
+		.align 2
+	
+#character bytes and ascii values 	
+character:	.byte 'P'
+		.align 2	
+goal:		.byte 'G'
+		.align 2
+		
+monster: 	.byte 'M'
+		
+.text
+main:
+
+mapGen:
+	#pick a number between 0 and 24 to place the player 
+	li	$v0, 42	#random number
+	li	$a1, 24
+		syscall
+	move 	$s3, $a0 #the random number should be in $a0
+	
+	#place the objective 
+	li	$v0, 42	#random number
+	li	$a1, 24
+		syscall
+	move 	$s4, $a0
+	jal	spotConflict #check to see if the spot is occupied 
+
+
+spotConflict:
+	beq 	$s3, $s4 
+	
+	
+	
+	
+
+gameloop:
+
+	li	$s0, 0	#$s0 is map array register 
+	la	$s7, mapArray	#load address of mapArray into $s7
+	
+	#add character
+	lb	$t0, character
+		#'p' in character
+	add	$s7, $s3, $zero
+	sb 	$t0, mapArray($s3)
+	
+	#reload map aray to s7
+	la	$s7, mapArray
+	
+	mapPrintLoop:
+		li	$s1, 0	#counter
+		li	$s2, 5 	#linebreak
+		
+		li	$v0, 4
+		la 	$a0, newline	#print linebreak
+			syscall
+			
+		#print spacer 
+		li	$v0, 4
+		la	$a0, spacer
+			syscall
+
+		rowPrintLoop:
+		#print character
+		lb 	$a0, 0($s7)	 #whatever point in array
+		li	$v0, 11		#print character syscall
+			syscall
+			
+		addi	$s7, $s7, 1	#point to next char in array
+		
+			#print spacer 
+		li	$v0, 4
+		la	$a0, spacer
+			syscall
+
+		addi	$s1, $s1, 1
+		addi	$s0, $s0, 1
+		
+		beq 	$s0, 25, exit
+		beq	$s1, $s2, mapPrintLoop	
+
+		j 	rowPrintLoop	#else just keep doing row print loop 
+
+
+
+exit:
+	li	$v0, 4
+	la 	$a0, newline	#print linebreak
+		syscall
+	
+	li	$v0, 10
+	syscall
+	
+
+	
