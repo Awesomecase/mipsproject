@@ -2,8 +2,9 @@ Changed:
  spawns the G, M, and P in distinct non adjacent tiles
  allows movement of the P character with w a s d, enter to confirm entry. Pulls first ascii value 
  
+11/18: scaled up to 64 squares. 8 by 8. good number for computers. Added win lose dialogue cases. 
+ 
 to do: 
-dialogue boxes on the win and lose conditions
 algorithm for M movement
 possibly a second M or other obstacle generation? 
 fix the horizontal line change movement?
