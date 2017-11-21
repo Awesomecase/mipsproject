@@ -6,7 +6,7 @@
 	#dungeon crawler. Get the P to the G using wasd, avoid M monsters. 
 	
 	#include the macros used in this project. stored in MacroFile.asm
-.include 	"Macro_File.asm"
+
 
 .data
 welcome:	.asciiz	"Welcome to 'Computer Architecture Project' the Game: "
