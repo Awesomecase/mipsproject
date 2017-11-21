@@ -5,9 +5,6 @@
 
 	#dungeon crawler. Get the P to the G using wasd, avoid M monsters. 
 	
-	#include the macros used in this project. stored in MacroFile.asm
-
-
 .data
 welcome:	.asciiz	"Welcome to 'Computer Architecture Project' the Game: "
 		.align 2
@@ -32,7 +29,7 @@ spacer: 	.ascii " | "
 		.align 2
 		
 framebreak:	.asciiz "\n ----------------------------------"
-
+#user input goes here
 userString:	.space 8
 		.align 2
 
@@ -139,18 +136,18 @@ checkOverlap:
 	
 ##################################################################	
 gameloop:
-#check for win conditions
-	#if p == g -> win exit
-	#if p = m ->lose exit
-	
 	add	$t0, $zero, $zero	#zero temp register
 	
+	#check for win conditions------------------------------------------
+	#if p == g -> win exit
+	#if p = m ->lose exit
 	beq	$s3, $s4, win
 	beq	$s3, $t7, lose
 	beq	$s3, $t6, lose
 	beq	$s3, $t5, lose
 	beq	$s3, $t4, lose
-	
+	#------------------------------------------------------
+	#print the map
 	li	$v0, 4
 	la	$a0, framebreak
 		syscall
@@ -184,7 +181,7 @@ gameloop:
 	lb	$t0, clyde
 		#'C' in character
 	sb 	$t0, mapArray($t4)
-	
+##################################################################	
 	mapPrintLoop:
 		li	$s1, 0	#counter
 		li	$s2, 8 	#linebreak
@@ -218,14 +215,17 @@ gameloop:
 			beq	$s1, $s2, mapPrintLoop	
 
 			j 	rowPrintLoop	#else just keep doing row print loop 
+			
 ##################################################################	
 
 #game play, jumps to gameloop
 movement:
 	#call monster movement, moves all the monsters in accordance to their algorithms 
 	mobTurn:
-	jal	monsterMove
-
+		jal	monsterMove
+	#goes to the monster's turn. Upon completion, returns to here. 
+	
+	#------------------------------------------------------
 	userTurn:
 	#get movement 
 	li	$v0, 8
@@ -247,8 +247,12 @@ movement:
 	beq	$t0, $s6, right
 	
 	j	gameloop
+	#------------------------------------------------------	
 	
 monsterMove:
+	#moves the 4 monsters. 
+	#uses a chase, sometimes chase, mirror, and random algorithm to for movement. 
+	#each monster movement leads into the next one's algorithm 
 #--------------------------------------------------------------------------------------
 	#inky: $t7 #chases character. Simple directional 
 	mob1:
@@ -276,7 +280,7 @@ monsterMove:
 		addi	$t7, $t7, -8
 		rem	$t7, $t7, 64
 		bltz 	$t7, neg1
-		j	mob2	
+		j	mob2			#after movement is made, jumps to next mob's algorithm 
 		
 	left1:	
 		li	$t1, '_'		#replace former point with normal spacer
@@ -328,6 +332,7 @@ monsterMove:
 		beq	$t0, 3, right2
 		#otherwise goes in accordance to the randomized function 
 	pursue:
+		#modified version of the inky algorithm for tracking. 
 		sub 	$t0, $s3, $t6
 		bgtz	$t0, BkyRightDown
 		blez	$t0, BkyLeftUp
@@ -343,7 +348,7 @@ monsterMove:
 		BkyRightDown: 
 			abs	$t0, $t0
 			blt	$t0, 8, right2
-			j	down2		
+			j	down2	
 	up2:	
 		li	$t2, '_'		#replace former point with normal spacer
 		sb	$t2, mapArray($t6)
@@ -385,6 +390,7 @@ monsterMove:
 		syscall
 	move 	$t0, $a0
 	
+	#1/4 chance to go in every direction
 	beq	$t0, 0, up3
 	beq	$t0, 1, left3
 	beq	$t0, 2, down3
@@ -395,7 +401,7 @@ monsterMove:
 		addi	$t5, $t5, -8
 		rem	$t5, $t5, 64
 		abs	$t5, $t5
-		j	mob4
+		j	mob4 
 		
 	left3:	
 		li	$t1, '_'		#replace former point with normal spacer
@@ -438,7 +444,7 @@ monsterMove:
 		addi	$t4, $t4, -8
 		rem	$t4, $t4, 64
 		abs	$t4, $t4
-		j	mobDone
+		j	mobDone			#monsters are done moving
 		
 	left4:	
 		li	$t1, '_'		#replace former point with normal spacer
@@ -470,7 +476,7 @@ exit:
 	li	$v0, 4
 	la 	$a0, newline	#print linebreak
 		syscall
-	li	$v0, 10
+	li	$v0, 10		#exit program
 		syscall
 	
 ##################################################################	
@@ -487,8 +493,10 @@ spotConflict:
 	rem	$s4, $s4, 64
 	j	checkOverlap
 
+#up down left right, moves the player either +1, -1 for horizontal, or +8 and -8 for vertical.
+#uses modulus to account for rollover over 64, uses the negativeCondition method to deal with leaving
+#the field through the top. (see negnegativeCondition)
 up: 	
-	#clearSpace($s3)
 	li	$t1, '_'		#replace former point with normal spacer
 	sb	$t1, mapArray($s3)
 	addi	$s3, $s3, -8
@@ -520,6 +528,7 @@ right:
 	bltz 	$s3, negativeCondition
 	j	gameloop
 
+#adds 64 to bring it to the bottom
 negativeCondition:
 	#have a rollover. Top to bot. 
 	addi	$s3, $s3, 64
@@ -531,7 +540,7 @@ win:	#you win
 	la	$a1, congrats	#message text
 	li	$v0, 59
 		syscall
-	j exit
+	j exit	#on the win or lose conditions, the game loop is teminated
 
 lose:	#you lose 
 	#dialogue box
