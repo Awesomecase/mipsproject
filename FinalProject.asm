@@ -73,7 +73,7 @@ intro:	#welcome to game.
 		syscall
 
 mapGen:
-	#pick a number between 0 and 24 to place the player 
+	#pick a number between 0 and 63 to place the player 
 	li	$v0, 42	#random number
 	li	$a1, 64
 		syscall
@@ -111,7 +111,7 @@ checkOverlap:
 	#runs through all possible overlap configurations 
 	#check to see if the spot is occupied 
 		#ensures the player, ghosts, and $ will not spawn on the same spot 
-	beq 	$s3, $s4 spotConflict	#player $ same spot
+	beq 	$s3, $s4, spotConflict	#player $ same spot
 		
 	beq	$s4, $t7, spotConflict #goal ghost same spot 
 	beq	$s4, $t6, spotConflict	
